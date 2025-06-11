@@ -1,0 +1,353 @@
+# Nano Loan Origination Chrome Extension - Product Requirements Document
+
+## Executive Summary
+
+The Nano Loan Origination Chrome Extension is an enterprise-grade browser extension designed to enhance the loan origination workflow within Canopy Mortgage's existing Nano LOS platform. The extension provides role-based dashboards, advanced analytics, and streamlined user interfaces that integrate seamlessly with the existing Nano system while providing additional functionality and improved user experience.
+
+## Project Overview
+
+### Product Name
+Nano Loan Origination Chrome Extension (Pipeline Pro)
+
+### Version
+1.0.0
+
+### Target Users
+- Loan Officers
+- Loan Officer Assistants  
+- Processors
+- Underwriters
+- Closers
+- Funders
+- Management and Administrative Staff
+
+## Business Objectives
+
+### Primary Goals
+1. **Enhanced Productivity**: Reduce time spent navigating between different views and screens in Nano LOS
+2. **Role-Based Efficiency**: Provide customized dashboards and workflows tailored to specific loan origination roles
+3. **Real-Time Analytics**: Deliver instant insights and metrics without leaving the current workflow
+4. **Seamless Integration**: Work alongside existing Nano LOS without disrupting current processes
+5. **Scalable Architecture**: Support future enhancements and additional features
+
+### Success Metrics
+- 25% reduction in time spent searching for loan information
+- 40% improvement in role-specific task completion rates
+- 90% user adoption within 6 months
+- 95% uptime and reliability
+- Zero security incidents
+
+## Technical Requirements
+
+### Technology Stack
+- **Frontend Framework**: React 18+ with TypeScript
+- **UI Library**: ShadCN/UI components
+- **Data Grid**: AG Grid Enterprise
+- **Build Tool**: Vite
+- **Extension Architecture**: Manifest V3
+- **State Management**: React Context + Local Storage
+- **Authentication**: JWT token integration with Nano LOS
+- **API Integration**: RESTful API calls to Nano endpoints
+- **Cloud Services**: Google Cloud Storage for configuration
+- **Testing**: Jest, React Testing Library, Playwright for E2E
+
+### Browser Compatibility
+- Chrome 100+
+- Microsoft Edge 100+
+- Future: Firefox support (Phase 2)
+
+## Functional Requirements
+
+### 1. Extension Initialization & Configuration
+
+#### 1.1 Cloud-Based Configuration
+- **Requirement**: Extension must check Google Cloud Storage for configuration file before initialization
+- **Configuration File**: `https://storage.googleapis.com/toolbar_resources/config.json`
+- **Behavior**: 
+  - If `enabled: true` → Initialize extension
+  - If `enabled: false` → Disable extension silently
+  - If config unavailable → Default to disabled state
+- **Cache Busting**: Append timestamp to prevent cache issues
+- **Error Handling**: Graceful degradation if config service is unavailable
+
+#### 1.2 Token Management System
+- **Token Source**: Extract JWT from `localStorage['ember_simple_auth-session']`
+- **Token Validation**: Verify token expiration before use
+- **Token Refresh**: Monitor localStorage for token updates every 1 second
+- **Cross-Component Access**: Share token across content scripts, popup, and sidepanel
+- **Global Availability**: Token accessible on any Chrome tab for search functionality
+- **Storage**: Store validated token in `chrome.storage.local` as `gridtoken`
+
+### 2. URL Monitoring & Page Detection
+
+#### 2.1 Supported URL Patterns
+- Search Page: `https://canopymortgage.nanolos.com/loan-fulfillment/#/main/search/apps`
+- App Detail Page: `https://canopymortgage.nanolos.com/loan-fulfillment/#/main/app/{loanId}`
+- Loan Application: `https://canopymortgage.nanolos.com/loan-application//#/loan/{loanId}`
+
+#### 2.2 Page-Specific Behavior
+- **Search Page**: Load dashboard with kanban boards and role-specific views
+- **App/Loan Pages**: Display minimal toolbar overlay
+- **Other Pages**: Clean up any extension elements, remain dormant
+
+### 3. Dashboard System
+
+#### 3.1 Role-Based Kanban Boards
+**Supported Roles**:
+- Loan Officer
+- Loan Officer Assistant
+- Processor
+- Underwriter
+- Closer
+- Funder
+
+**Dashboard Features**:
+- Role selector dropdown in left navigation
+- Dynamic board layout based on selected role
+- Drag-and-drop functionality for loan status updates
+- Real-time data refresh (every 30 seconds)
+- Customizable column configurations per role
+
+#### 3.2 User Filtering System
+- **Default View**: Current user's loans only
+- **User Selector**: Dropdown with all accessible users
+- **"All Users" Option**: Show complete dataset user has access to
+- **Permission-Based**: Respect existing Nano LOS user permissions
+- **Performance Optimization**: Implement virtual scrolling for large datasets
+
+### 4. Data Integration
+
+#### 4.1 API Integration
+- **Authentication**: Use Nano JWT token for all API calls
+- **Base URL**: `https://api.nanolos.com/`
+- **Rate Limiting**: Implement exponential backoff for failed requests
+- **Caching**: Cache non-critical data for 5 minutes
+- **Error Handling**: Comprehensive error handling with user feedback
+
+#### 4.2 Data Synchronization
+- **Initial Load**: Fetch complete dataset on search page entry
+- **Incremental Updates**: Poll for changes every 30 seconds
+- **Conflict Resolution**: Handle concurrent updates gracefully
+- **Offline Support**: Cache critical data for offline viewing
+
+### 5. User Interface Requirements
+
+#### 5.1 Design System
+- **Consistency**: Match Nano LOS visual design language
+- **Responsiveness**: Support screen resolutions from 1366x768 to 4K
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Dark Mode**: Support system preference detection
+- **Loading States**: Clear indicators for all async operations
+
+#### 5.2 Navigation Structure
+```
+Dashboard
+├── Role Selector (Dropdown)
+├── User Filter (Dropdown)
+├── Search (Global loan search)
+├── Kanban Board
+│   ├── Column 1 (Role-specific)
+│   ├── Column 2 (Role-specific)
+│   └── Column N (Role-specific)
+└── Settings/Preferences
+```
+
+### 6. Chrome Extension Architecture
+
+#### 6.1 Extension Components
+- **Manifest V3**: Modern extension architecture
+- **Content Script**: Inject dashboard into Nano pages
+- **Background Service Worker**: Handle token management and API calls
+- **Popup**: Quick search and status overview
+- **Side Panel**: Detailed loan information and tools
+- **Options Page**: User preferences and settings
+
+#### 6.2 Permissions Required
+```json
+{
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "background"
+  ],
+  "host_permissions": [
+    "https://canopymortgage.nanolos.com/*",
+    "https://api.nanolos.com/*",
+    "https://storage.googleapis.com/*"
+  ]
+}
+```
+
+## Non-Functional Requirements
+
+### 1. Performance
+- **Initial Load**: Dashboard loads within 3 seconds
+- **API Response Time**: < 2 seconds for standard queries
+- **Memory Usage**: < 50MB total extension memory footprint
+- **CPU Impact**: < 5% CPU usage during normal operation
+
+### 2. Security
+- **Token Security**: Secure token storage and transmission
+- **CSP Compliance**: Strict Content Security Policy adherence
+- **Data Encryption**: Encrypt sensitive data in local storage
+- **Audit Logging**: Track all user actions for compliance
+- **No Data Persistence**: Clear sensitive data on browser close
+
+### 3. Reliability
+- **Uptime**: 99.9% availability
+- **Error Rate**: < 0.1% of operations result in errors
+- **Recovery**: Automatic recovery from network failures
+- **Graceful Degradation**: Function with limited capabilities when APIs are unavailable
+
+### 4. Scalability
+- **User Load**: Support 1000+ concurrent users
+- **Data Volume**: Handle 10,000+ loans in dashboard
+- **API Scalability**: Efficient pagination and data fetching
+- **Browser Performance**: Maintain responsiveness with large datasets
+
+## Development Phases
+
+### Phase 1: Core Infrastructure (Weeks 1-3)
+- Extension manifest and basic architecture
+- Token management system
+- URL monitoring and page detection
+- Basic dashboard scaffolding with mock data
+- Development environment setup
+
+### Phase 2: Dashboard Implementation (Weeks 4-6)
+- Role-based kanban boards
+- User filtering system
+- Basic API integration
+- Drag-and-drop functionality
+- Responsive design implementation
+
+### Phase 3: API Integration & Data (Weeks 7-9)
+- Complete Nano API integration
+- Real-time data synchronization
+- Advanced filtering and search
+- Performance optimization
+- Error handling and user feedback
+
+### Phase 4: Testing & Polish (Weeks 10-12)
+- Comprehensive testing (unit, integration, E2E)
+- User acceptance testing
+- Performance optimization
+- Security audit
+- Documentation completion
+
+### Phase 5: Deployment & Monitoring (Weeks 13-14)
+- Production deployment
+- Monitoring and analytics setup
+- User training materials
+- Support documentation
+- Launch and rollout
+
+## Testing Strategy
+
+### Development Environment
+- **Local Development**: Vite dev server with Chrome extension hot reload
+- **Mock API**: Local API server with sample Nano data
+- **Test Database**: Isolated test data that mirrors production structure
+
+### Testing Environment  
+- **Staging Environment**: Mirror of production with test data
+- **Integration Testing**: Full API integration with Nano test environment
+- **User Acceptance Testing**: Real user scenarios with actual data
+
+### Production Environment
+- **Gradual Rollout**: 10% → 50% → 100% user rollout
+- **Feature Flags**: Ability to enable/disable features remotely
+- **Monitoring**: Real-time performance and error monitoring
+- **Rollback Capability**: Quick rollback to previous version if needed
+
+### Test Coverage
+- **Unit Tests**: 90%+ code coverage
+- **Integration Tests**: All API endpoints and user flows
+- **E2E Tests**: Critical user journeys
+- **Performance Tests**: Load testing with realistic data volumes
+- **Security Tests**: Penetration testing and vulnerability scanning
+
+## Risk Assessment
+
+### High Risk
+- **Token Expiration Handling**: Critical for extension functionality
+- **API Rate Limiting**: Could impact user experience
+- **Browser Extension Updates**: Chrome store approval process
+- **Data Security**: Handling sensitive loan information
+
+### Medium Risk
+- **Performance with Large Datasets**: May require optimization
+- **Cross-Browser Compatibility**: Focus on Chrome first
+- **User Adoption**: Requires training and change management
+
+### Low Risk
+- **UI/UX Changes**: Can be iterated post-launch
+- **Feature Additions**: Modular architecture supports expansion
+
+## Success Criteria
+
+### Technical Success
+- [ ] Extension loads reliably on all supported Nano pages
+- [ ] Token management works without user intervention
+- [ ] Dashboard displays real-time data from Nano API
+- [ ] Role-based views function correctly for all user types
+- [ ] Performance meets specified benchmarks
+- [ ] Security requirements are satisfied
+
+### Business Success
+- [ ] 80%+ user satisfaction score
+- [ ] 25% improvement in task completion time
+- [ ] 90% user adoption within 6 months
+- [ ] Zero critical security incidents
+- [ ] ROI positive within 12 months
+
+## Maintenance & Support
+
+### Ongoing Maintenance
+- **Monthly Updates**: Feature enhancements and bug fixes
+- **Quarterly Reviews**: Performance and usage analytics
+- **Annual Audits**: Security and compliance reviews
+- **API Monitoring**: Track Nano API changes and updates
+
+### Support Structure
+- **Level 1**: Basic user support and troubleshooting
+- **Level 2**: Technical issues and extension problems
+- **Level 3**: API integration and complex technical issues
+- **Documentation**: Comprehensive user guides and technical docs
+
+## Appendices
+
+### A. Nano API Endpoints
+Reference: https://api.nanolos.com/Help/Nano
+
+### B. Sample Token Structure
+```json
+{
+  "authenticated": {
+    "idToken": "eyJ...",
+    "idTokenPayload": {
+      "exp": 1234567890,
+      "sub": "user123",
+      "role": "LoanOfficer"
+    }
+  }
+}
+```
+
+### C. Configuration File Schema
+```json
+{
+  "enabled": true,
+  "version": "1.0.0",
+  "features": {
+    "dashboard": true,
+    "search": true,
+    "analytics": true
+  },
+  "apiEndpoints": {
+    "base": "https://api.nanolos.com/",
+    "timeout": 30000
+  }
+}
+``` 

@@ -1,0 +1,399 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Chrome Extension Development Rules
+
+## **Manifest V3 Architecture**
+- **Always use Manifest V3**: No exceptions for new development
+- **Service Worker Background**: Use background service worker instead of persistent background pages
+- **Content Security Policy**: Strict CSP with no inline scripts or eval()
+- **Host Permissions**: Request minimal necessary permissions, use activeTab when possible
+
+## **Extension Component Structure**
+
+### **Background Service Worker**
+```typescript
+// ✅ DO: Proper service worker structure
+class BackgroundService {
+  constructor() {
+    this.initializeListeners();
+  }
+
+  private initializeListeners() {
+    chrome.runtime.onInstalled.addListener(this.handleInstall);
+    chrome.storage.onChanged.addListener(this.handleStorageChange);
+  }
+
+  private handleInstall = (details: chrome.runtime.InstalledDetails) => {
+    if (details.reason === 'install') {
+      // First time installation logic
+    }
+  };
+}
+
+// Initialize immediately
+new BackgroundService();
+```
+
+### **Content Scripts**
+```typescript
+// ✅ DO: Clean content script injection
+class ContentScriptManager {
+  private isInitialized = false;
+
+  async initialize() {
+    if (this.isInitialized) return;
+    
+    // Check if extension is enabled
+    const config = await this.fetchConfig();
+    if (!config.enabled) return;
+
+    await this.initializeTokenManagement();
+    this.setupURLMonitoring();
+    this.isInitialized = true;
+  }
+}
+
+// ❌ DON'T: Immediately execute without checks
+window.addEventListener('load', () => {
+  // This runs on every page load
+});
+```
+
+### **Message Passing**
+```typescript
+// ✅ DO: Type-safe message passing
+interface ExtensionMessage {
+  action: 'shareToken' | 'getConfig' | 'updateData';
+  payload?: any;
+}
+
+// Background to content script
+chrome.tabs.sendMessage(tabId, {
+  action: 'shareToken',
+  payload: { token }
+} as ExtensionMessage);
+
+// Content script to background
+chrome.runtime.sendMessage({
+  action: 'getConfig'
+} as ExtensionMessage);
+```
+
+## **Storage Management**
+
+### **Chrome Storage API**
+```typescript
+// ✅ DO: Proper error handling and type safety
+interface StorageData {
+  gridtoken: string;
+  userPreferences: UserPreferences;
+  dashboardConfig: DashboardConfig;
+}
+
+class StorageManager {
+  static async setToken(token: string): Promise<void> {
+    try {
+      await chrome.storage.local.set({ gridtoken: token });
+    } catch (error) {
+      console.error('Failed to store token:', error);
+      throw new StorageError('Token storage failed');
+    }
+  }
+
+  static async getToken(): Promise<string | null> {
+    try {
+      const result = await chrome.storage.local.get('gridtoken');
+      return result.gridtoken || null;
+    } catch (error) {
+      console.error('Failed to retrieve token:', error);
+      return null;
+    }
+  }
+}
+
+// ❌ DON'T: Synchronous storage access
+localStorage.setItem('token', token); // This doesn't work in service workers
+```
+
+## **Token Management**
+
+### **JWT Token Handling**
+```typescript
+// ✅ DO: Robust token management
+class TokenManager {
+  private static readonly TOKEN_KEY = 'gridtoken';
+  private static readonly CHECK_INTERVAL = 1000; // 1 second
+  
+  static async initializeTokenWatcher(): Promise<void> {
+    const checkToken = async () => {
+      const token = await this.extractValidToken();
+      if (token) {
+        await this.shareTokenAcrossExtension(token);
+        return true;
+      }
+      return false;
+    };
+
+    if (!(await checkToken())) {
+      const intervalId = setInterval(async () => {
+        if (await checkToken()) {
+          clearInterval(intervalId);
+        }
+      }, this.CHECK_INTERVAL);
+    }
+  }
+
+  private static async extractValidToken(): Promise<string | null> {
+    try {
+      const authDataRaw = localStorage.getItem('ember_simple_auth-session');
+      if (!authDataRaw) return null;
+
+      const authData = JSON.parse(authDataRaw);
+      const token = authData?.authenticated?.idToken;
+      const payload = authData?.authenticated?.idTokenPayload;
+
+      if (!token || !payload) return null;
+
+      // Check expiration
+      const expirationTime = payload.exp * 1000;
+      if (Date.now() >= expirationTime) return null;
+
+      return token;
+    } catch (error) {
+      console.error('Token extraction failed:', error);
+      return null;
+    }
+  }
+}
+```
+
+## **URL Monitoring & Page Detection**
+
+### **URL Pattern Matching**
+```typescript
+// ✅ DO: Clean URL pattern matching
+class URLMatcher {
+  private static readonly PATTERNS = {
+    search: /\/loan-fulfillment\/#\/main\/search\/apps/,
+    appDetail: /\/loan-fulfillment\/#\/main\/app\/(\d+)/,
+    loanApp: /\/loan-application\/\/#\/loan\/(\d+)/,
+  } as const;
+
+  static getPageType(url: string): 'search' | 'app' | 'loan' | 'other' {
+    if (this.PATTERNS.search.test(url)) return 'search';
+    if (this.PATTERNS.appDetail.test(url)) return 'app';
+    if (this.PATTERNS.loanApp.test(url)) return 'loan';
+    return 'other';
+  }
+
+  static extractLoanId(url: string): string | null {
+    const appMatch = url.match(this.PATTERNS.appDetail);
+    if (appMatch) return appMatch[1];
+    
+    const loanMatch = url.match(this.PATTERNS.loanApp);
+    if (loanMatch) return loanMatch[1];
+    
+    return null;
+  }
+}
+```
+
+## **Error Handling**
+
+### **Extension-Specific Error Classes**
+```typescript
+// ✅ DO: Create specific error types
+export class ExtensionError extends Error {
+  constructor(message: string, public code: string) {
+    super(message);
+    this.name = 'ExtensionError';
+  }
+}
+
+export class TokenError extends ExtensionError {
+  constructor(message: string) {
+    super(message, 'TOKEN_ERROR');
+  }
+}
+
+export class ConfigError extends ExtensionError {
+  constructor(message: string) {
+    super(message, 'CONFIG_ERROR');
+  }
+}
+
+// ✅ DO: Graceful error handling
+class ErrorHandler {
+  static handle(error: Error, context: string): void {
+    console.error(`[${context}]:`, error);
+    
+    if (error instanceof TokenError) {
+      // Handle token-specific errors
+      this.handleTokenError(error);
+    } else if (error instanceof ConfigError) {
+      // Handle config-specific errors
+      this.handleConfigError(error);
+    }
+  }
+}
+```
+
+## **Performance Optimization**
+
+### **Lazy Loading & Code Splitting**
+```typescript
+// ✅ DO: Lazy load heavy components
+const DashboardComponent = lazy(() => import('./Dashboard'));
+
+// ✅ DO: Dynamic imports for extension modules
+class ExtensionLoader {
+  static async loadDashboard() {
+    const { Dashboard } = await import('./dashboard/Dashboard');
+    return Dashboard;
+  }
+}
+
+// ❌ DON'T: Import everything upfront
+import Dashboard from './dashboard/Dashboard'; // Heavy component loaded immediately
+```
+
+### **Memory Management**
+```typescript
+// ✅ DO: Clean up resources
+class ContentScriptManager {
+  private observers: MutationObserver[] = [];
+  private intervals: number[] = [];
+
+  cleanup() {
+    this.observers.forEach(observer => observer.disconnect());
+    this.intervals.forEach(interval => clearInterval(interval));
+    this.observers = [];
+    this.intervals = [];
+  }
+}
+
+// Add cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  contentScriptManager.cleanup();
+});
+```
+
+## **Security Best Practices**
+
+### **Content Security Policy**
+```json
+// ✅ DO: Strict CSP in manifest.json
+{
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
+```
+
+### **Data Sanitization**
+```typescript
+// ✅ DO: Sanitize external data
+class DataSanitizer {
+  static sanitizeHTML(html: string): string {
+    const temp = document.createElement('div');
+    temp.textContent = html;
+    return temp.innerHTML;
+  }
+
+  static validateToken(token: string): boolean {
+    // JWT format validation
+    const parts = token.split('.');
+    return parts.length === 3;
+  }
+}
+
+// ❌ DON'T: Direct DOM manipulation with unsanitized data
+element.innerHTML = userInput; // XSS vulnerability
+```
+
+## **Testing Patterns**
+
+### **Extension Testing**
+```typescript
+// ✅ DO: Mock Chrome APIs for testing
+const mockChrome = {
+  storage: {
+    local: {
+      get: jest.fn(),
+      set: jest.fn(),
+    }
+  },
+  runtime: {
+    sendMessage: jest.fn(),
+    onMessage: {
+      addListener: jest.fn(),
+    }
+  }
+};
+
+// ✅ DO: Test extension functionality
+describe('TokenManager', () => {
+  beforeEach(() => {
+    global.chrome = mockChrome;
+  });
+
+  it('should store token correctly', async () => {
+    await TokenManager.setToken('test-token');
+    expect(mockChrome.storage.local.set).toHaveBeenCalledWith({
+      gridtoken: 'test-token'
+    });
+  });
+});
+```
+
+## **Development Workflow**
+
+### **Hot Reload Setup**
+```typescript
+// ✅ DO: Development mode detection
+if (process.env.NODE_ENV === 'development') {
+  // Enable hot reload for content scripts
+  if (module.hot) {
+    module.hot.accept();
+  }
+}
+```
+
+## **Common Anti-Patterns**
+
+### **❌ DON'T: Blocking Operations**
+```typescript
+// ❌ DON'T: Synchronous storage
+const token = localStorage.getItem('token');
+
+// ❌ DON'T: Blocking API calls
+fetch('/api/data').then(response => {
+  // Blocking the main thread
+});
+```
+
+### **❌ DON'T: Memory Leaks**
+```typescript
+// ❌ DON'T: Uncleaned event listeners
+window.addEventListener('resize', handler);
+// Missing cleanup on page unload
+
+// ❌ DON'T: Persistent intervals without cleanup
+setInterval(() => {
+  // This runs forever
+}, 1000);
+```
+
+### **❌ DON'T: Insecure Practices**
+```typescript
+// ❌ DON'T: Expose sensitive data
+window.extensionData = { token: 'secret' };
+
+// ❌ DON'T: eval() or innerHTML with user data
+eval(userScript);
+element.innerHTML = userInput;
+```
+

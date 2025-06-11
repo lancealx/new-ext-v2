@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Nano Loan Origination Extension (Pipeline Pro)",
+  "version": "1.0.0",
+  "description": "Enterprise-grade browser extension for Canopy Mortgage's Nano LOS platform",
+  "permissions": ["storage", "activeTab", "scripting", "background"],
+  "host_permissions": [
+    "https://canopymortgage.nanolos.com/*",
+    "https://api.nanolos.com/*",
+    "https://storage.googleapis.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://canopymortgage.nanolos.com/*",
+        "https://*.nanolos.com/*",
+        "https://nanolos.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_page": "options.html"
+} 

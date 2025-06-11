@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nano LOS Extension Options</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+    .option-group {
+      margin-bottom: 2rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    .option-group h2 {
+      font-size: 1.25rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    .option-row {
+      display: flex;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    .option-label {
+      flex: 0 0 30%;
+      font-weight: 500;
+    }
+    .option-control {
+      flex: 1;
+    }
+    select, input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+    }
+    .checkbox-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checkbox-control input {
+      width: auto;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      background-color: #1f2937;
+      color: white;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #111827;
+    }
+    .save-container {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .status-message {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 0.25rem;
+    }
+    .success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .error {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nano LOS Extension Options</h1>
+  
+  <div class="option-group">
+    <h2>General Settings</h2>
+    <div class="option-row">
+      <div class="option-label">Default Role</div>
+      <div class="option-control">
+        <select id="default-role">
+          <option value="LoanOfficer">Loan Officer</option>
+          <option value="LoanOfficerAssistant">Loan Officer Assistant</option>
+          <option value="Processor">Processor</option>
+          <option value="Underwriter">Underwriter</option>
+          <option value="Closer">Closer</option>
+          <option value="Funder">Funder</option>
+        </select>
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-label">User Filter</div>
+      <div class="option-control">
+        <select id="user-filter">
+          <option value="current">My Loans Only</option>
+          <option value="all">All Loans</option>
+        </select>
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-label">Theme</div>
+      <div class="option-control">
+        <select id="theme">
+          <option value="system">System Default</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  
+  <div class="option-group">
+    <h2>Dashboard Settings</h2>
+    <div class="option-row">
+      <div class="option-label">Auto Refresh</div>
+      <div class="option-control checkbox-control">
+        <input type="checkbox" id="auto-refresh">
+        <label for="auto-refresh">Enable automatic refresh</label>
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-label">Refresh Interval</div>
+      <div class="option-control">
+        <select id="refresh-interval">
+          <option value="60000">1 minute</option>
+          <option value="300000">5 minutes</option>
+          <option value="600000">10 minutes</option>
+          <option value="1800000">30 minutes</option>
+        </select>
+      </div>
+    </div>
+    <div class="option-row">
+      <div class="option-label">Max Loans Per Column</div>
+      <div class="option-control">
+        <input type="number" id="max-loans" min="10" max="100" value="50">
+      </div>
+    </div>
+  </div>
+  
+  <div class="save-container">
+    <button id="save-options">Save Options</button>
+  </div>
+  
+  <div id="status-message" class="status-message" style="display: none;"></div>
+
+  <script src="options.js"></script>
+</body>
+</html> 
