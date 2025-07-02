@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nano LOS Extension</title>
+  <style>
+    /* Modern shadcn-inspired styling */
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 222.2 84% 4.9%;
+      --card: 0 0% 100%;
+      --card-foreground: 222.2 84% 4.9%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 222.2 84% 4.9%;
+      --primary: 221.2 83.2% 53.3%;
+      --primary-foreground: 210 40% 98%;
+      --secondary: 210 40% 96%;
+      --secondary-foreground: 222.2 84% 4.9%;
+      --muted: 210 40% 96%;
+      --muted-foreground: 215.4 16.3% 46.9%;
+      --accent: 210 40% 96%;
+      --accent-foreground: 222.2 84% 4.9%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 214.3 31.8% 91.4%;
+      --input: 214.3 31.8% 91.4%;
+      --ring: 221.2 83.2% 53.3%;
+      --radius: 0.5rem;
+    }
+
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
+      --popover: 222.2 84% 4.9%;
+      --popover-foreground: 210 40% 98%;
+      --primary: 210 40% 98%;
+      --primary-foreground: 222.2 84% 4.9%;
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 212.7 26.8% 83.9%;
+    }
+
+    * {
+      border-color: hsl(var(--border));
+    }
+
+    body {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 400px;
+      min-height: 500px;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .card {
+      background-color: hsl(var(--card));
+      color: hsl(var(--card-foreground));
+      border: 1px solid hsl(var(--border));
+      border-radius: calc(var(--radius) - 2px);
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    }
+
+    .card-header {
+      padding: 16px 16px 0;
+    }
+
+    .card-content {
+      padding: 16px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    .card-description {
+      font-size: 14px;
+      color: hsl(var(--muted-foreground));
+      margin: 0;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      padding: 8px 16px;
+      height: 36px;
+      text-decoration: none;
+    }
+
+    .button-primary {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .button-primary:hover {
+      background-color: hsl(var(--primary) / 0.9);
+    }
+
+    .button-secondary {
+      background-color: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+    }
+
+    .button-secondary:hover {
+      background-color: hsl(var(--secondary) / 0.8);
+    }
+
+    .button-outline {
+      border: 1px solid hsl(var(--border));
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+    }
+
+    .button-outline:hover {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .input {
+      display: flex;
+      height: 36px;
+      width: 100%;
+      border-radius: calc(var(--radius) - 2px);
+      border: 1px solid hsl(var(--input));
+      background-color: hsl(var(--background));
+      padding: 8px 12px;
+      font-size: 14px;
+      color: hsl(var(--foreground));
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+    }
+
+    .input::placeholder {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      display: block;
+      color: hsl(var(--foreground));
+    }
+
+    .space-y-4 > * + * {
+      margin-top: 16px;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 8px;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .gap-2 {
+      gap: 8px;
+    }
+
+    .gap-4 {
+      gap: 16px;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .text-sm {
+      font-size: 14px;
+    }
+
+    .text-xs {
+      font-size: 12px;
+    }
+
+    .text-muted {
+      color: hsl(var(--muted-foreground));
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .mt-2 {
+      margin-top: 8px;
+    }
+
+    .mt-4 {
+      margin-top: 16px;
+    }
+
+    .mb-2 {
+      margin-bottom: 8px;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: calc(var(--radius) - 2px);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-connected {
+      background-color: hsl(142.1 76.2% 36.3% / 0.1);
+      color: hsl(142.1 70.6% 45.3%);
+    }
+
+    .status-disconnected {
+      background-color: hsl(var(--destructive) / 0.1);
+      color: hsl(var(--destructive));
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .results-table th {
+      font-weight: 600;
+      background-color: hsl(var(--muted) / 0.5);
+    }
+
+    .results-table tr:hover {
+      background-color: hsl(var(--muted) / 0.5);
+      cursor: pointer;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid hsl(var(--muted));
+      border-radius: 50%;
+      border-top-color: hsl(var(--primary));
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .version-info {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s;
+    }
+
+    .version-info:hover {
+      color: hsl(var(--primary));
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .flex-1 {
+      flex: 1;
+    }
+
+    .fixed {
+      position: fixed;
+    }
+
+    .top-4 {
+      top: 16px;
+    }
+
+    .right-4 {
+      right: 16px;
+    }
+
+    .p-3 {
+      padding: 12px;
+    }
+
+    .rounded-md {
+      border-radius: 6px;
+    }
+
+    .z-50 {
+      z-index: 50;
+    }
+
+    .bg-green-100 {
+      background-color: #dcfce7;
+    }
+
+    .text-green-800 {
+      color: #166534;
+    }
+
+    .bg-red-100 {
+      background-color: #fee2e2;
+    }
+
+    .text-red-800 {
+      color: #991b1b;
+    }
+
+    .bg-blue-100 {
+      background-color: #dbeafe;
+    }
+
+    .text-blue-800 {
+      color: #1e40af;
+    }
+
+    .font-medium {
+      font-weight: 500;
+    }
+
+    .py-4 {
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .py-8 {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+
+    .text-destructive {
+      color: hsl(var(--destructive));
+    }
+
+    .bg-muted {
+      background-color: hsl(var(--muted));
+    }
+
+    .button-sm {
+      height: 32px;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .overflow-auto {
+      overflow: auto;
+    }
+
+    .rounded {
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Nano LOS Pipeline Pro</h3>
+        <p class="card-description">Enhanced Nano LOS experience with advanced search and tools</p>
+      </div>
+      <div class="card-content">
+        <div class="flex justify-between items-center">
+          <div id="status" class="status-indicator status-disconnected">
+            <span>⚠️</span>
+            <span>Checking connection...</span>
+          </div>
+          <div id="version" class="version-info text-sm text-muted">v1.0.0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h4 class="card-title">Loan Search</h4>
+        <p class="card-description">Search for loans by name or application ID</p>
+      </div>
+      <div class="card-content space-y-4">
+        <div class="space-y-2">
+          <label class="label" for="firstName">First Name</label>
+          <input type="text" id="firstName" class="input" placeholder="Enter first name" />
+        </div>
+        
+        <div class="space-y-2">
+          <label class="label" for="lastName">Last Name</label>
+          <input type="text" id="lastName" class="input" placeholder="Enter last name" />
+        </div>
+        
+        <div class="space-y-2">
+          <label class="label" for="appId">Application ID</label>
+          <input type="text" id="appId" class="input" placeholder="Enter 6-digit app ID" />
+        </div>
+        
+        <div class="flex gap-2">
+          <button id="searchBtn" class="button button-primary flex-1">
+            <span id="searchText">Search</span>
+            <span id="searchLoading" class="loading hidden"></span>
+          </button>
+          <button id="clearBtn" class="button button-outline">Clear</button>
+        </div>
+        
+        <div id="quickOpen" class="hidden">
+          <button id="quickOpenBtn" class="button button-secondary w-full">
+            Open Application
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="resultsCard" class="card mt-4 hidden">
+      <div class="card-header">
+        <h4 class="card-title">Search Results</h4>
+        <p class="card-description">Click on any row to open the loan application</p>
+      </div>
+      <div class="card-content">
+        <div id="resultsContent">
+          <!-- Results will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h4 class="card-title">Quick Actions</h4>
+      </div>
+      <div class="card-content space-y-2">
+        <button id="openDashboard" class="button button-outline w-full">
+          Open Dashboard
+        </button>
+        <button id="openSearch" class="button button-outline w-full">
+          Open Search Page
+        </button>
+        <button id="openOptions" class="button button-outline w-full">
+          Extension Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html> 

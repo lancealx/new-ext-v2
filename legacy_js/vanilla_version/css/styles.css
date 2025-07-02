@@ -1,0 +1,320 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensure height covers the entire browser window */
+  width: 100%;
+}
+
+#mega-container {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  /* We won't use display: contents or flex here since we'll use fixed + offsets */
+}
+  #dsp-grids{
+    width: 98%;
+    height: 98%;
+    display: -webkit-box;
+  }
+  #dsp-container{
+    height: 90%;
+    margin: auto;
+
+  }
+  #myGrid {
+    margin-top: 65px; 
+    height: calc(100% - 65px); 
+    width: 100%;
+    padding: 10px;
+    overflow: auto; 
+  }
+  #myGrid-container {
+    padding: 10px;
+    margin-top: 65px; 
+    height: calc(100% - 65px); 
+    width: 100%;
+    overflow: auto; 
+  }
+  #dspGrid-leads, #dspGrid-apps, #dspGrid-approved, #dspGrid-notsubmitted, #dspGrid-active {
+    height: 100%;
+    width: 500px;
+    margin: 2px 10px;
+  }
+
+  .ag-theme-balham .ctc-row {
+    background-color: rgb(226, 255, 226);
+    color: rgb(0, 70, 0);
+}
+
+.ag-theme-balham .suspended-row {
+  background-color: rgb(255, 226, 226);
+  color: rgb(70, 0, 0);
+}
+
+.spacer-cell {
+  border-left: lightgray 1px dashed;
+  border-right: lightgray 1px dashed;
+  background-color: rgb(238, 238, 238);
+  
+}
+.left-border {
+  border-left: lightgray 1px solid !important;
+ /* box-shadow: inset 2px 0px 2px 0px rgba(0, 0, 0, 0.15); */
+}
+.right-border {
+  border-right: lightgray 1px solid !important;
+ /* box-shadow: inset -2px 0px 2px 0px rgba(0, 0, 0, 0.15); */
+}
+.good-status {
+  background-color: rgb(210, 252, 210);
+  color: darkgreen;
+}
+
+.filter-text-box {
+  width: 225px;
+  height: 37px;
+  padding-left: 5px;
+  margin-top: 11px;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+.input-container {
+  position: relative;
+  margin: 4px 0px;
+  float: right;
+}
+#mega-mymenu {
+  position: fixed;
+  top: 0;        /* Stick to top */
+  left: 0;       /* Align to left edge */
+  right: 0;      /* Align to right edge */
+  height: 65px;  /* Fixed height for the nav bar */
+  padding: 4px 18px;
+  
+  z-index: 999;  /* Keep it on top of everything else */
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+  background-color: #f9f9f9; /* example background so it's visible */
+  /* Optional slight shadow */
+}
+
+.input-container .fa-search {
+  position: absolute;
+  right: 10px;
+  top: 62%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+/*
+.ag-theme-balham .ag-pinned-left-cols-container, 
+.ag-theme-balham .ag-pinned-left-header {
+  box-shadow: 2px 0px 15px 0px rgba(0, 0, 0, 0.15);
+  border-right: 1px solid #d6d6d6;
+  z-index: 1;
+}
+  */
+
+.ag-filter-menu .ag-set-filter-list {
+ height: 500px;
+}
+
+.ag-theme-balham {
+  background-color: #f8f8f8;
+}
+
+.ag-header-cell-filtered {
+  background-color: #66a2ff !important;
+  color: #fff !important;
+}
+.small-font{
+font-size: x-small;
+}
+
+/* The switch - the box around the slider */
+.switch {
+position: relative;
+display: inline-block;
+width: 30px;
+height: 17px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+/* The switch - the box around the slider */
+.switch {
+position: relative;
+display: inline-block;
+width: 30px; /* 50% of 60px */
+height: 17px; /* 50% of 34px */
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+
+/* The slider */
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+transition: .2s;
+border-radius: 17px; /* 50% of 34px */
+}
+
+.slider:before {
+position: absolute;
+content: "";
+height: 13px; /* 50% of 26px */
+width: 13px; /* 50% of 26px */
+left: 2px; /* Adjusted for smaller size */
+bottom: 2px; /* Adjusted for smaller size */
+background-color: white;
+transition: .2s;
+border-radius: 50%;
+}
+
+/* When the checkbox is checked, add a blue background */
+input:checked + .slider {
+background-color: #2196F3;
+}
+
+/* Move the slider to the right when checked */
+input:checked + .slider:before {
+transform: translateX(13px); /* Adjusted for smaller size */
+}
+
+/* Rounded sliders */
+.slider.round {
+border-radius: 17px; /* 50% of 34px */
+}
+
+.slider.round:before {
+border-radius: 50%;
+}
+
+.ag-header-group-cell {
+background-color: gainsboro;
+border-left: 1px solid darkgray;
+border-right: 1px solid darkgray;
+}
+.ag-theme-balham-dark .ag-header-group-cell {
+background-color: #333;
+border-left: 1px solid #555;
+border-right: 1px solid #555;
+color: #fff;
+}
+
+
+.calendar-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: #007bff;
+  padding: 0px 10px 0px 0px;
+}
+
+.calendar-button:hover {
+  color: #0056b3;
+}
+
+#clear-filters {
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+
+}
+
+#print-state {
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+
+}
+
+#save-filters {
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+
+}
+
+#refresh-spinner {
+  display: none;
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+}
+
+#refresh-button {
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+}
+
+#conditional-formatting-toggle {
+  display: inline-block !important;
+}
+
+#settings-button  {
+  float: right !important;
+  margin: 15px 15px 0px 0px !important;
+}
+
+#group-by-container {
+  display: inline-block !important;
+  width: 200px;
+  margin: 0px 15px 0px 0px !important;
+}
+
+#closing-date-filter {
+  display: inline-block !important;
+  width: 200px;
+  margin: 0px 15px 0px 0px !important;
+}
+
+#classification-filter {
+  vertical-align: unset !important;
+}
+
+#myview-select {
+  width: 200px;
+  margin: 0px -4px 0px 0px !important;
+  border-radius: 0px !important;
+  
+}
+
+.subtext {
+  display: table;
+  font-size: x-small;
+  color: #6c757d;
+  padding-left: 5px;
+}
+
+.toast {
+  opacity: 1 !important;
+}
+
+
+.customInnerHeader {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.customInnerHeader span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fa-edit{
+  color: rgb(237, 100, 100);
+}
+
+

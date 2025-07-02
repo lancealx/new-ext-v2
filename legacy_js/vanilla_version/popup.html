@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<link rel="stylesheet" type="text/css" href="northstar.css">
+<head>
+    <title>Token Copier</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            width: 615px; /* Adjusted width for better Bootstrap layout */
+            padding: 15px; /* Add some padding */
+            height: 600px;
+        }
+        /* Optional: Adjust spacing for filter tags */
+        #activeFiltersContainer .filter-tag {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!--
+    <a href="https://sites.google.com/northstarlending.com/guidelines/home" id="guidelines" class="btn btn-link">Guidelines</a><br>
+    <a href="https://sites.google.com/northstarlending.com/quick-tools/home" id="quickTools" class="btn btn-link">Quick Tools</a><br>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeQTt-PxyLzjAE58TJ4NKenj83h-2z-7adP1F-jztp5EKNmRg/viewform" id="quickLead" class="btn btn-link">Quick Lead</a><br>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1_Z9bvlxeHLY4Qzua3AEzJJA1ebdoCjxrXz4RHY72RIZaNw/viewform" id="quickPQ" class="btn btn-link">PQ Letter</a><br>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSHn-yERxaPxHGsrAhFMa3w_tYRJyvkPNNAL4t_bdVAQYanQ/viewform" id="quickBuilderPQ" class="btn btn-link">Builder PQ Letter</a><br>
+
+
+    <br>
+    <h3>Compose Email</h3>
+    <div class="mb-3">
+        <label for="to" class="form-label">To:</label>
+        <input id="to" type="email" class="form-control" placeholder="recipient@example.com">
+    </div>
+    <div class="mb-3">
+        <label for="subject" class="form-label">Subject:</label>
+        <input id="subject" type="text" class="form-control" placeholder="Email Subject">
+    </div>
+    <div class="mb-3">
+        <label for="body" class="form-label">HTML Content:</label>
+        <textarea id="body" class="form-control" rows="5" placeholder="Enter HTML content here"></textarea>
+    </div>
+    <button id="composeEmail" class="btn btn-primary mb-2">Create Draft</button>
+    <button id="openSidePanel" class="btn btn-secondary mb-2">Open Side Panel</button>
+    <button id="sendEmail" class="btn btn-success mb-2">Send Email</button>
+
+    -->
+
+    
+
+    <p>Quick Search</p>
+
+    <!-- Primary Search Fields -->
+     <div class="mb-3">
+        
+        <input id="searchFirstName" type="text" class="form-control" placeholder="First Name" style="border: 1px solid #828282;">
+    </div>
+    <div class="mb-3">
+        
+        <input id="searchLastName" type="text" class="form-control" placeholder="Last Name" style="border: 1px solid #828282;">
+    </div>
+    <div class="mb-3 d-flex">
+        
+        <input id="searchAppId" type="text" class="form-control me-2" placeholder="App ID" style="width: 300px; border: 1px solid #828282;">
+        <div id="openQuickLoan" class="btn btn-primary" style="display: none;">Open</div>  
+    </div>
+
+
+
+    <!-- Search Action Button -->
+    <button id="searchPipelineBtn" type="button" class="btn btn-primary w-100">Search</button>
+
+    <!-- Results Section -->
+    <div id="searchResultsContainer" class="mt-4" style="max-height: 295px; overflow-y: auto;">
+        <table class="table table-striped table-hover table-sm small">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Closing</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody id="searchResultsBody">
+                <!-- Search results will be populated here by popup.js -->
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No results yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="copyToken" class="version"></div>
+    <!-- Include Bootstrap JS (Optional, but often needed for dropdowns, modals, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="popup.js"></script>
+
+</body>
+</html>

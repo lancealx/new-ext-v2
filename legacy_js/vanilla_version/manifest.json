@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "NorthStar Nano Extension",
+  "version": "1.26.5",
+  "description": "Displays important data in Nano.",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "activeTab",
+    "webNavigation",
+    "clipboardWrite",
+    "scripting",
+    "tabs",
+    "webRequest",
+    "sidePanel",
+    "storage"
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html",
+    "default_title": "Side Panel"
+  },
+  "oauth2": {
+    "client_id": "1049990745599-bmi8sloo248d4b7u75ufae43a29bh5mi.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/gmail.compose"
+    ]
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "32": "cropped-NorthStar-Logo-Icon-32x32.png",
+      "48": "cropped-NorthStar-Logo-Icon-32x32.png",
+      "128": "cropped-NorthStar-Logo-Icon-32x32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.nanolos.com/*", "*://*.mail.google.com/*"],
+      "css": ["northstar.css"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["grid.js", "grid.html", "ag-grid-enterprise.min.js", "jquery.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
+    "https://api.nanolos.com/*",
+    "*://*.nanolos.com/*",
+    "*://*.docs.google.com/*",
+    "chrome-extension://iaglmjemnjnejgjcahodbempahpfoccd/*",
+    "chrome-extension://cplmjcponghhljeaedhmhgepccglcakc/*"
+  ]
+}

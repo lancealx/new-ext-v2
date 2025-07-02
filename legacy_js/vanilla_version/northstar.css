@@ -1,0 +1,300 @@
+/* northstar.css */
+
+
+.custom-data-div {
+    
+    display : flex;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 1fr;
+    gap: 0px;
+    justify-content:center;
+    padding: 8px;
+    background-color: white;
+    position: fixed;
+    width: 100%;
+    z-index: 51;
+    border-bottom: ridge;
+    top: 0;
+}
+
+.refresh-button {
+    display: inline-block;
+    margin-left: 4px;
+    background-color: #0064ff;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: small;
+}
+
+.toolbar-item {
+    width: 220px;
+    height: 72px;
+    display: grid;
+    grid:
+      "text1 topbox" 1fr
+      "text2 midbox" 1fr
+      "text3 bottombox" 1fr
+      / .9fr 1fr;
+    gap: 0px 4px;
+  }
+  
+  .text1, .text2, .text3 {
+    text-align: right;
+    font-size: x-small;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.topbox, .midbox, .bottombox {
+    color: #0064ff;
+    width: 100%;
+    border: 1px solid lightgrey;
+    text-align: center;
+    font-weight: bold; /* Bold font weight */
+    font-size: smaller; /* Responsive font size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    white-space: nowrap; /* Prevent text wrapping */
+    position: relative; /* Ensure the hover effect works correctly */
+}
+
+.topbox:hover, .midbox:hover, .bottombox:hover {
+    overflow: visible; /* Show overflow on hover */
+    white-space: normal; /* Allow text to wrap */
+    z-index: 1; /* Ensure the hovered element is on top */
+    
+}
+
+
+.loan-product-font-size {
+    font-size: smaller;
+    justify-content: left;
+}
+
+.topbox a, .midbox a, .bottombox a {
+    color: #0064ff; /* Blue link color */
+    font-weight: bold !important; /* Bold font weight */
+    font-size: small !important; /* Responsive font size */
+    text-decoration: underline !important; /* Add underline */
+}
+
+
+
+.topbox:hover, .midbox:hover, .bottombox:hover {
+    background-color: white; /* Change background color on hover */
+
+}
+
+
+.topbox {
+    grid-area: topbox;
+    border-bottom: none; /* Remove bottom border to avoid overlap */
+}
+
+.midbox {
+    grid-area: midbox;
+    border-bottom: none; /* Remove bottom border to avoid overlap */
+}
+
+.bottombox {
+    grid-area: bottombox;
+}
+
+/* New styles for alert conditions */
+.alert_ns {
+    background-color: #ffcccc; /* Light red */
+    color: #8b0303; /* Dark red */
+}
+
+.warning_ns {
+    background-color: #ffffab; /* Light yellow */
+    color: #856910; /* Dark yellow */
+}
+
+.good_ns {
+    background-color: #ccffcc; /* Light green */
+    color: #067506; /* Dark green */
+}
+
+
+.loan-product {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.row {
+    display: flex;
+}
+
+.col {
+    flex: 1;
+    padding: 0 10px;
+}
+
+
+
+.refreshing {
+    background-color: rgb(213, 237, 239); /* Change this to any color you prefer */
+    animation: pulse 1.75s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1.00; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1.00; }
+}
+
+.extensionButton{
+    background-color: #0064ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.version    {
+    font-size: x-small;
+    color: #0064ff;
+    text-align: right;
+    margin-top: 10px;
+}
+
+.mortgage-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 85px;
+    background: #fff;
+    border-bottom: 1px solid #e8eaed;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: 'Google Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: auto;
+}
+
+.toolbar-content {
+    display: flex;
+    gap: 32px;
+    flex: 1;
+    min-width: 0;
+}
+
+.info-group {
+    display: flex;
+    gap: 16px;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
+.info-label {
+    font-size: 11px;
+    color: #5f6368;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.info-value {
+    font-size: 13px;
+    color: #202124;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-link {
+    color: #1a73e8;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.info-link:hover {
+    color: #1557b0;
+    text-decoration: underline;
+}
+
+/* Status styling */
+.status-good { color: #137333; }
+.status-warning { color: #ea8600; }
+.status-alert { color: #d93025; }
+
+.status-group {
+    display: flex;
+    gap: 16px;
+    padding-left: 16px;
+    border-left: 1px solid #e8eaed;
+    margin-left: 16px;
+}
+
+.status-main {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.refresh-btn {
+    background: #f8f9fa;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    color: #3c4043;
+    cursor: pointer;
+    font-size: 16px;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-left: 16px;
+    flex-shrink: 0;
+}
+
+.refresh-btn:hover {
+    background: #f1f3f4;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.refreshing .refresh-btn {
+    color: #0064ff;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .info-group {
+        gap: 12px;
+    }
+    .toolbar-content {
+        gap: 24px;
+    }
+}

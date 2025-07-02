@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Side Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+        }
+        .custom-data-div {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+        @media (max-width: 1200px) {
+            .custom-data-div {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .custom-data-div {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .custom-data-div {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidepanel-content">
+        <div class="custom-data-div" id="customDataDiv">
+            <img src="side-panel-task-list.png" alt="Task List" style="width: 100%; height: auto; margin: auto;">
+        </div>
+    </div>
+   <!--
+    <script src="sidepanel.js"></script>
+-->
+
+</body>
+</html>

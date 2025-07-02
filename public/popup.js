@@ -96,10 +96,9 @@ class NanoLOSPopup {
 
   async checkTokenStatus() {
     try {
-      // Request token from background script
-      const response = await this.sendMessage({ action: 'getToken' });
+      const response = await this.sendMessage({ type: 'GET_TOKEN' });
       
-      if (response.success && response.token) {
+      if (response.token) {
         this.token = response.token;
         this.updateStatus('connected', '✅', 'Connected to Nano LOS');
       } else {
@@ -337,14 +336,10 @@ class NanoLOSPopup {
 
   async showDebugInfo() {
     try {
-      const response = await this.sendMessage({ action: 'getDebugInfo' });
+      const response = await this.sendMessage({ type: 'DUMP_STORAGE' });
       
       const debugContent = `
         <div class="space-y-4">
-          <div>
-            <h5 class="font-medium mb-2">Token Status</h5>
-            <pre class="text-xs bg-muted p-2 rounded overflow-auto">${JSON.stringify(response.tokenInfo, null, 2)}</pre>
-          </div>
           <div>
             <h5 class="font-medium mb-2">Storage Contents</h5>
             <pre class="text-xs bg-muted p-2 rounded overflow-auto">${JSON.stringify(response.storage, null, 2)}</pre>

@@ -18,7 +18,7 @@
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/extension/background/background.ts"
   },
   "content_scripts": [
     {
@@ -27,7 +27,7 @@
         "https://*.nanolos.com/*",
         "https://nanolos.com/*"
       ],
-      "js": ["content.js"]
+      "js": ["src/extension/content/content.ts"]
     }
   ],
   "side_panel": {

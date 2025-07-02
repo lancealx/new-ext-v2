@@ -1,0 +1,84 @@
+
+***************************** Pipeline Roadmap *****************************
+    > Add grid to Queues & Search page
+        UI connection to URL for fetch filtering purposes
+    > DSP / Sales Manager View
+        Need prospects who are not Prequalified
+    > Closing Que View
+        Does this need to be live data? How can I show this to all users?
+    > Qlik data integration
+        Send Jeff list of missing fields
+
+    > Status Column
+        Add all missing status to order. Pull app statues from postman. Put in that order.
+        Add conditional formatting to more statues
+    > Settings Menu
+    > Prebuilt filter views & columns
+        MEGA DEFAULT (everything bagle)
+            > All fields
+        LOA
+            Docs not requested
+            Docs not reviewed
+            Not Submitted
+        Processor
+            > PTF conditions, sort by closing date. statuses: CTC, Prepared, Ins Sent, Ins received
+            > Not submitted files
+    > Reporting
+        Pivot table features
+            Aggregations
+            Agent counts?
+
+
+
+
+
+
+***************************** Plans / goals *****************************
+    > Make boxes clickable links?
+        Base loan amt toggle > total loan amt.
+        Assets link to assets screen on loan app.
+        Credit score link to credit screen on loan app.
+        Appraisal stats link to 3rd part screen
+    > Total Loan Amount
+    > Loan Status - Prospect, Submitted, UW, UW # of times?
+        Remaining condition count?
+        Hover and show more statues?
+    > Disclosures
+        Initial Dis Sent / Rec
+        LE Sent / Rec
+        CD Sent / Rec
+    > Email app parties button
+    > Side Panel?
+    > Extension Icon
+        Quick lead link?
+        Links to Latest guidelines?
+        Version # display?
+    > Risk Level Codes and Alerts
+        Display to the user with some context of the problem
+
+
+*************************** Releases ********************************
+9/24/2024 - Published version 0.7.4
+    > Added feature to monitor url changes and reload toolbar if the appid changes.
+    > Added toolbar to loan application page.
+
+
+9/22/2024 - Published Version 0.7.3
+    Added kills switch config.json file. It's on google cloud developer nano toolbar bucket
+    I had to turn off caching.
+
+9/21/2024 - Published version 0.7.2
+    Cut out all listening of api calls and instead load toolbar on initial loan open. 
+    Then only by refresh button after that. This creates a problem. When the user 
+    types a new AppID into the url the toolbar does not update. It will show old data 
+    from previous loan. Need to add logic to call main() when a new AppID is detected in the URL.
+    But not cause a loop where main() is continually called.
+
+    Jeff said Ember stores all data in memory. Going to make a new version of the ext which 
+    looks at that store, will need to inject a script into the page to do so.
+
+
+9/1/2024 - Published version 0.7.
+    Added Appraisal status logic and conditional formatting
+
+    

@@ -44,6 +44,7 @@ class NanoLOSContent {
       const token = authData && authData.authenticated && authData.authenticated.idToken;
       const idTokenPayload = authData && authData.authenticated && authData.authenticated.idTokenPayload;
 
+
       if (!token) {
         console.log('No idToken found in auth data');
         return;
@@ -61,6 +62,7 @@ class NanoLOSContent {
       }
 
       console.log('Valid token extracted successfully');
+      
 
       // Send token to background script (like legacy: chrome.runtime.sendMessage({ action: 'shareToken', token: token }))
       await this.sendTokenToBackground(token);
@@ -74,7 +76,7 @@ class NanoLOSContent {
   private async sendTokenToBackground(token: string) {
     return new Promise<void>((resolve, reject) => {
       chrome.runtime.sendMessage({
-        action: 'updateToken',
+        type: 'STORE_TOKEN',
         token: token
       }, (response) => {
         if (chrome.runtime.lastError) {
@@ -145,7 +147,9 @@ class NanoLOSContent {
 
   private setupMessageListeners() {
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      switch (request.action) {
+      console.log('Content script received message:', request.type || request.action);
+      
+      switch (request.type || request.action) {
         case 'extractToken':
           this.handleExtractTokenRequest(sendResponse);
           return true; // Keep message channel open
@@ -158,8 +162,15 @@ class NanoLOSContent {
           this.handleGetPageInfoRequest(sendResponse);
           return true;
           
+        case 'TOKEN_UPDATED':
+          // Handle token update broadcast from background script
+          console.log('Token updated by background script');
+          sendResponse({ success: true });
+          return false; // No async response needed
+          
         default:
-          console.log('Unknown message action:', request.action);
+          console.log('Unknown message type/action:', request.type || request.action);
+          return false;
       }
     });
   }

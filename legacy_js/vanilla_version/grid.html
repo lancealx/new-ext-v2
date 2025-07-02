@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIPELINE PRO - (beta v1.1)</title>
+
+
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link href="css/toastr.min.css" rel="stylesheet"/>
+
+
+
+  
+
+<!-- import jquery for toastr -->
+  <script src="js/jquery.min.js"></script>
+
+  <!-- Toastr JS -->
+  <script src="js/toastr.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js" ></script>
+
+  <!-- Includes all JS & CSS for the JavaScript Data Grid -->
+  <script src="js/ag-grid-enterprise.min.js"></script>
+
+
+
+</head>
+<body>
+  <!-- make a button to toggle displaying mega container and display container display none 
+  <button id="toggle-dsp">Toggle DSP</button>
+  -->
+
+  <div id="mega-container">
+      <div id="mega-mymenu">
+
+        <div style="display:inline-block">
+          <div class="subtext">
+            Views
+          </div>
+
+  
+            <select id="myview-select" class="form-select" aria-label="Default select example">
+              <option value="default">Default</option>
+              <option value="">---</option>
+              <option value="cv1">Custom View 1</option>
+              <option value="cv2">Custom View 2</option>
+              <option value="cv3">Custom View 3</option>
+              <option value="cv4">Custom View 4</option>
+              <option value="cv5">Custom View 5</option>
+              <option value="cv6">Custom View 6</option>
+              <option value="cv7">Custom View 7</option>
+              <option value="cv8">Custom View 8</option>
+              <option value="cv9">Custom View 9</option>
+              <option value="cv10">Custom View 10</option>
+            </select>
+
+
+        </div>
+
+        <div style="display:inline-block; margin-bottom: 10px;">
+          <button id="views-button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewsModal" style="margin: 0px 15px 4px 0px; border-radius: 0px;">
+            <i class="fa fa-window-restore"></i>
+          </button>
+        </div>
+        
+
+
+        <!-- Closing Date Filter-->
+        <div style="display:inline-block">
+          <div class="subtext">
+            Closing Date Filter
+          </div>
+          <select id="closing-date-filter" class="closing-date-filter form-select" aria-label="Default select example">
+            <option value="all" selected></option>
+            <option value="thisWeek">This Week</option>
+            <option value="nextWeek">Next Week</option>
+            <option value="lastMonth">Last Month</option>
+            <option value="thisMonth">This Month</option>
+            <option value="nextMonth">Next Month</option>
+            <option value="thisMonthAndNextMonth">This Month & Next</option>
+            <option value="spacer"> - - - </option>
+            <option value="next7Days">Next 7 Days</option>
+            <option value="next15Days">Next 15 Days</option>
+            <option value="next30Days">Next 30 Days</option>
+            <option value="next60Days">Next 60 Days</option>
+            <option value="next90Days">Next 90 Days</option>
+            <option value="next180Days">Next 180 Days</option>
+          </select>
+
+      </div>
+
+      <div style="display:inline-block">
+        <div class="subtext">
+          Group By
+        </div>
+        <div id="group-by-container">
+          <select id="group-by-select" class="form-select" aria-label="Default select example">
+            <option value="none" selected></option>
+            <option value="currentStatus">Status</option>
+            <option value="queueType">Borrower Priority</option>
+            <!--
+            <option value="userSpecifiedQueue">Borrower Priority</option>
+            -->
+            <option value="teamloanOfficer">Loan Officer</option>
+            <option value="loanOfficerAssistant">Loan Officer Assistant</option>
+            <option value="processor">Processor</option>
+            <option value="underwriter">Underwriter</option>
+            <option value="lockStatus">Lock Status</option>
+            <option value="corporatePartner">Corporate Partner</option>
+            <option value="referralSource">Referral Source</option>
+          </select>
+        </div>
+
+      </div>
+
+
+        <div style="display:inline-block">
+          <div class="subtext">
+            Classification
+          </div>
+          <div id="classification-filter" class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+            <input type="checkbox" class="btn-check" id="prospects-filter" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="prospects-filter">Prospects</label>
+
+            <input type="checkbox" class="btn-check" id="onhold-filter" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="onhold-filter">On Hold</label>
+          
+            <input type="checkbox" class="btn-check" id="active-filter" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="active-filter">Active</label>
+          
+            <input type="checkbox" class="btn-check" id="funded-filter" autocomplete="off" checked>
+            <label class="btn btn-outline-primary" for="funded-filter">Funded</label>
+          </div>
+
+        </div>
+
+
+        
+
+        <div class="input-container">
+          <input type="text" id="filter-text-box" class="filter-text-box" placeholder="Search All..." />
+          <i class="fas fa-search"></i>
+        </div>
+
+        <button id="settings-button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <i class="fa fa-cog"></i>
+        </button>
+
+        <button id="refresh-button" type="button" class="refresh-button btn btn-outline-primary"><i class="fas fa-sync-alt"></i></button>
+
+        <button id="refresh-spinner" class="btn btn-primary" type="button" disabled>
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading...</span>
+        </button>
+
+        <button id="clear-filters" type="button" class="btn btn-outline-primary">
+          Clear
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+        </button>
+
+<!--  DEBUG BUTTONS
+
+        <button id="print-state" type="button" class="btn btn-outline-primary">
+          print state
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+        </button>
+
+        <button id="save-filters" type="button" class="btn btn-outline-primary">
+          save filters
+          <i class="fa-solid fa-arrow-rotate-left"></i>
+        </button>
+        
+-->
+
+      </div>
+
+    <!-- Your Data Grid container -->
+      
+      <div id="myGrid" class="ag-theme-balham">
+      </div>
+
+  </div>
+
+
+
+<!-- DSP Grids -->
+
+<div id="dsp-container" style="display: none;">
+  <div id="dsp-menu">
+    <input type="text" id="dsp-text-box" class="filter-text-box" placeholder="Search All..." />
+    <select id="loan-officer-dropdown" class="closing-date-filter">
+      <option value="all">All Loan Officers</option>
+    </select>
+
+  </div>
+  <div id="dsp-grids">
+    <div id="dspGrid-leads" class="ag-theme-balham"></div>
+    <div id="dspGrid-apps" class="ag-theme-balham"></div>
+    <div id="dspGrid-approved" class="ag-theme-balham"></div>
+    <div id="dspGrid-notsubmitted" class="ag-theme-balham"></div>
+    <div id="dspGrid-active" class="ag-theme-balham"></div>
+  </div>  
+</div>
+
+
+<!-- Settings Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Settings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div id="conditional-formatting-toggle" class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="toggle-formatting" checked>
+          <label class="form-check-label" for="toggle-formatting">Cell Formatting</label>
+        </div>
+
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="theme-switcher" checked>
+          <label class="form-check-label theme-switcher" for="theme-switcher">Light Theme</label>
+        </div>
+
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="all-data">
+          <label class="form-check-label" for="all-data"></label>
+        </div>
+
+        <!-- Get notes Button & Local data check 
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="local-data" checked>
+          <label class="form-check-label" for="local-data">local data</label>
+        </div>
+        <button id="get-notes">Get Notes</button>
+      -->
+
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Add Notes Modal -->
+<div class="modal fade" id="addNotesModal" tabindex="-1" aria-labelledby="addNotesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addNotesModalTitle">Add a Note</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <input type="text" id="note-subject" class="form-control" placeholder="Enter subject">
+        </div>
+        <textarea id="note-text-area" class="form-control" style="height: 180px;" placeholder="Enter your note here..."></textarea>
+        <div class="modal-footer">
+
+          <button id="record-note-button" type="button" class="btn btn-info me-auto">
+            <i class="fa fa-microphone"></i> Record
+          </button> 
+
+          <button id="save-note" type="button" class="btn btn-primary">Save Note</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- views modal -->
+<div class="modal fade" id="viewsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Custom Views</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName1" class="form-control" placeholder="Custom View 1">
+            </div>
+            <div class="col">
+              <button id="saveView1-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName2" class="form-control" placeholder="Custom View 2">
+            </div>
+            <div class="col">
+              <button id="saveView2-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName3" class="form-control" placeholder="Custom View 3">
+            </div>
+            <div class="col">
+              <button id="saveView3-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName4" class="form-control" placeholder="Custom View 4">
+            </div>
+            <div class="col">
+              <button id="saveView4-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName5" class="form-control" placeholder="Custom View 5">
+            </div>
+            <div class="col">
+              <button id="saveView5-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName6" class="form-control" placeholder="Custom View 6">
+            </div>
+            <div class="col">
+              <button id="saveView6-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName7" class="form-control" placeholder="Custom View 7">
+            </div>
+            <div class="col">
+              <button id="saveView7-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName8" class="form-control" placeholder="Custom View 8">
+            </div>
+            <div class="col">
+              <button id="saveView8-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName9" class="form-control" placeholder="Custom View 9">
+            </div>
+            <div class="col">
+              <button id="saveView9-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="viewName10" class="form-control" placeholder="Custom View 10">
+            </div>
+            <div class="col">
+              <button id="saveView10-button" type="button" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- Referral Source Editor Modal - FUTURE VERSION -->
+<div class="modal fade" id="referral-source-editor" tabindex="-1" aria-labelledby="referral-source-editor-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="referral-source-editor-title">Referral Source - {{appId}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="nameSearch" class="form-control" placeholder="Name">
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="companySearch" class="form-control" placeholder="Company">
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="phoneSearch" class="form-control" style="max-width: 60%;" placeholder="Phone">
+            </div>
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <input type="text" id="emailSearch" class="form-control" style="max-width: 60%;" placeholder="Email">
+            </div>
+
+          </div>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <button type="button" class="btn btn-primary w-100" id="searchButton">
+                <i class="fas fa-search"></i> Search
+              </button>
+            </div>
+          </div>
+        </form>
+                <!-- ADD THIS CONTAINER FOR RESULTS -->
+                <hr> <!-- Optional separator -->
+                <div id="providerResultsContainer" class="mt-3" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Search results will be populated here -->
+                </div>
+                <!-- END RESULTS CONTAINER -->
+
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger me-auto" id="removeReferralButton">Remove Current</button> 
+        <!-- Add ID to this button add url link to button -->
+        <a href="https://canopymortgage.nanolos.com/loan-fulfillment/#/main/providers" target="_blank">
+          <button type="button" class="btn btn-success float-start" >Create New +</button> 
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+        
+<!-- Referral Source Editor Modal -->
+<div class="modal fade" id="referral-source-editor_simple" tabindex="-1" aria-labelledby="referral-source-editor-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="referral-source-editor-title_simple">Referral Source - {{appId}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- paragraph text -->
+        <p>Add a referral source to file contacts in Nano then click confirm to see changes in your pipeline.</p>
+        <form></form>
+          <div class="row" style="margin: 5px;">
+            <div class="col">
+              <button type="button" class="btn btn-primary w-100" id="confirmReferralSource">
+                <i class="fas fa-check"></i> Referral Source Added
+              </button>
+            </div>
+          </div>
+        </form>
+
+
+        <!-- ADD THIS CONTAINER FOR RESULTS -->
+        <hr> <!-- Optional separator -->
+        <div id="providerResultsContainer" class="mt-3" style="max-height: 300px; overflow-y: auto;">
+            <!-- Search results will be populated here -->
+        </div>
+        <!-- END RESULTS CONTAINER -->
+
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+  
+  <!-- Ensure main.js is loaded after the DOM and ag-grid-community -->
+  <script src="js/grid.js"></script>
+
+  <!-- Load the NEW referral source modal logic -->
+  <script src="js/referralSourceModal.js"></script> 
+
+  <script src="js/addNoteRecorder.js"></script> 
+
+</body>
+</html>

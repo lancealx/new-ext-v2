@@ -228,5 +228,5 @@ function broadcastTokenUpdate(token: string): void {
 // Initialize the background service
 initialize();
 
-// Export for testing
-export {}; 
+// Remove export for service worker compatibility
+// export {}; 
