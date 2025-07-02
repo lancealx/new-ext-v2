@@ -115,10 +115,14 @@ export class TokenService {
     this.listeners.push(callback);
     
     // Immediately notify with current token
-    if (this.currentToken && this.isTokenValid(this.currentToken)) {
-      callback(this.currentToken.token);
-    } else {
-      callback(null);
+    try {
+      if (this.currentToken && this.isTokenValid(this.currentToken)) {
+        callback(this.currentToken.token);
+      } else {
+        callback(null);
+      }
+    } catch (error) {
+      console.error('Error in token listener:', error);
     }
   }
 

@@ -1,9 +1,18 @@
 import '@testing-library/jest-dom';
-import { TextDecoder, TextEncoder } from 'util';
 
 // Mock browser APIs not available in Jest
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+Object.assign(global, {
+  TextEncoder: class TextEncoder {
+    encode(input: string): Uint8Array {
+      return new Uint8Array(Buffer.from(input, 'utf8'));
+    }
+  },
+  TextDecoder: class TextDecoder {
+    decode(input?: Uint8Array): string {
+      return Buffer.from(input || new Uint8Array()).toString('utf8');
+    }
+  }
+});
 
 // Mock chrome extension API
 Object.defineProperty(global, 'chrome', {
@@ -124,12 +133,7 @@ jest.mock('ag-grid-enterprise', () => ({
   LicenseManager: {
     setLicenseKey: jest.fn(),
   },
-}));
-
-// Mock Zustand
-jest.mock('zustand', () => ({
-  create: jest.fn(() => jest.fn()),
-}));
+}), { virtual: true });
 
 // Console spy setup for testing
 const originalError = console.error;
@@ -152,7 +156,8 @@ afterAll(() => {
 // Clean up after each test
 afterEach(() => {
   jest.clearAllMocks();
-  localStorageMock.clear();
+  // Clear localStorage
+  window.localStorage.clear();
 });
 
-export { mockChrome }; 
+export const mockChrome = global.chrome; 

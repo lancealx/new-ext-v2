@@ -1,10 +1,14 @@
 /** @type {import('jest').Config} */
-module.exports = {
-  preset: 'ts-jest',
+export default {
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+    '^.+\\.tsx?$': ['ts-jest', { 
+      tsconfig: 'tsconfig.json',
+      useESM: true
+    }],
     '^.+\\.jsx?$': 'babel-jest',
   },
   moduleNameMapper: {
@@ -30,32 +34,29 @@ module.exports = {
       statements: 70,
     },
   },
-  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/e2e/'],
   globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
     chrome: {
       storage: {
         sync: {
-          get: jest.fn(),
-          set: jest.fn(),
+          get: 'jest.fn()',
+          set: 'jest.fn()',
         },
         local: {
-          get: jest.fn(),
-          set: jest.fn(),
+          get: 'jest.fn()',
+          set: 'jest.fn()',
         },
       },
       runtime: {
-        sendMessage: jest.fn(),
+        sendMessage: 'jest.fn()',
         onMessage: {
-          addListener: jest.fn(),
-          removeListener: jest.fn(),
+          addListener: 'jest.fn()',
+          removeListener: 'jest.fn()',
         },
       },
       tabs: {
-        query: jest.fn(),
-        sendMessage: jest.fn(),
+        query: 'jest.fn()',
+        sendMessage: 'jest.fn()',
       },
     },
   },
