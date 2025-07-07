@@ -89,7 +89,7 @@ class NanoLOSPopup {
 
   async checkTokenStatus() {
     try {
-      const response = await this.sendMessage({ type: 'GET_TOKEN' });
+      const response = await this.sendMessage({ action: 'GET_TOKEN' });
       
       if (response.token) {
         this.token = response.token;
@@ -414,23 +414,12 @@ class NanoLOSPopup {
   }
 
   sendMessage(message) {
-    console.log('Popup sending message:', message);
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(message, (response) => {
-        console.log('Popup received response:', response);
-        console.log('Runtime last error:', chrome.runtime.lastError);
-        
         if (chrome.runtime.lastError) {
-          const error = new Error(chrome.runtime.lastError.message);
-          console.error('Chrome runtime error:', error);
-          reject(error);
-        } else if (!response) {
-          const error = new Error('No response received from background script');
-          console.error('No response error:', error);
-          reject(error);
-        } else {
-          resolve(response);
+          return reject(new Error(chrome.runtime.lastError.message));
         }
+        resolve(response);
       });
     });
   }

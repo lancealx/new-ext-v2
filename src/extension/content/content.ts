@@ -76,7 +76,7 @@ class NanoLOSContent {
   private async sendTokenToBackground(token: string) {
     return new Promise<void>((resolve, reject) => {
       chrome.runtime.sendMessage({
-        type: 'STORE_TOKEN',
+        action: 'storeToken',
         token: token
       }, (response) => {
         if (chrome.runtime.lastError) {

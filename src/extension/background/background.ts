@@ -85,26 +85,26 @@ function handleMessage(
   _sender: chrome.runtime.MessageSender,
   sendResponse: (response?: any) => void
 ): boolean {
-  console.log('Message received in background:', message.type);
+  console.log('Message received in background:', message.action);
 
   // Handle token operations
-  if (message.type === 'GET_TOKEN') {
+  if (message.action === 'GET_TOKEN') {
     handleGetToken(sendResponse);
     return true; // Indicate async response
   }
 
-  if (message.type === 'STORE_TOKEN') {
+  if (message.action === 'STORE_TOKEN') {
     handleStoreToken(message, sendResponse);
     return true; // Indicate async response
   }
 
-  if (message.type === 'VALIDATE_TOKEN') {
+  if (message.action === 'VALIDATE_TOKEN') {
     handleValidateToken(message, sendResponse);
     return true; // Indicate async response
   }
 
   // Special test command to dump storage contents
-  if (message.type === 'DUMP_STORAGE') {
+  if (message.action === 'DUMP_STORAGE') {
     chrome.storage.local.get(null, (result) => {
       console.log('Full storage dump:', result);
       sendResponse({ storage: result });
@@ -214,7 +214,7 @@ function broadcastTokenUpdate(token: string): void {
       if (tab.id) {
         try {
           chrome.tabs.sendMessage(tab.id, { 
-            type: 'TOKEN_UPDATED',
+            action: 'TOKEN_UPDATED',
             token
           });
         } catch (error) {
@@ -229,4 +229,4 @@ function broadcastTokenUpdate(token: string): void {
 initialize();
 
 // Remove export for service worker compatibility
-// export {}; 
+export {}; 

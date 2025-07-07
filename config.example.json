@@ -1,0 +1,41 @@
+{
+  "enabled": true,
+  "version": "1.0.0",
+  "licenses": {
+    "domain_licenses": {
+      "*.nanolos.com": {
+        "valid": true,
+        "expires": "2025-12-31",
+        "features": ["search", "data_grid", "kanban_board", "analytics", "export", "automation"],
+        "max_users": 100
+      },
+      "localhost": {
+        "valid": true,
+        "expires": "2025-12-31",
+        "features": ["search", "data_grid", "kanban_board", "analytics", "export", "automation"],
+        "max_users": 10
+      },
+      "demo.company.com": {
+        "valid": true,
+        "expires": "2025-03-31",
+        "features": ["search", "data_grid"],
+        "max_users": 5
+      }
+    },
+    "user_licenses": {
+      "admin@nanolos.com": {
+        "valid": true,
+        "expires": "2025-12-31",
+        "features": ["search", "data_grid", "kanban_board", "analytics", "export", "automation"]
+      },
+      "demo@company.com": {
+        "valid": true,
+        "expires": "2025-06-30",
+        "features": ["search", "data_grid", "export"]
+      }
+    }
+  },
+  "default_features": ["search"],
+  "license_server": "https://storage.googleapis.com/toolbar_resources/",
+  "last_updated": "2024-12-19T10:00:00Z"
+} 

@@ -9,7 +9,7 @@
     "dev": "tsc -w",
     "dev:vite": "vite",
     "dev:ext": "vite build --watch --mode development",
-    "build": "node scripts/create-icons.js && tsc && npm run copy-extension-files",
+    "build": "node scripts/create-icons.js && tsc && npm run copy-extension-files && npm run build-react-app",
     "build:prod": "tsc -b && vite build --mode production && node scripts/fix-service-worker.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
@@ -20,7 +20,8 @@
     "test:e2e": "playwright test",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
-    "copy-extension-files": "copyfiles -u 1 public/* public/**/* dist/"
+    "copy-extension-files": "copyfiles -u 1 public/* public/**/* dist/",
+    "build-react-app": "node scripts/build-react-app.cjs"
   },
   "keywords": [
     "chrome-extension",
@@ -45,7 +46,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",

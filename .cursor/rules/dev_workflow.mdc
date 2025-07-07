@@ -237,3 +237,53 @@ Once a task has been broken down into subtasks using `expand_task` or similar me
 
 ---
 *This workflow provides a general guideline. Adapt it based on your specific project needs and team practices.*
+
+# Vite Development & Build Workflow
+
+This document is critical for all developers and AI assistants. Failure to follow these rules will break the development environment's hot-reloading functionality.
+
+## **Primary Rule: DO NOT EDIT FILES IN `/public`**
+
+- **The `/public` directory is for static assets ONLY.** Files in this directory are copied directly to the final build output without being processed by Vite's development server.
+- **Any edits made to files in `/public` (e.g., `public/popup.html`, `public/popup.js`) will be IGNORED by the hot-reloading process.**
+- This mistake was made previously and resulted in hours of lost work. It is crucial to avoid repeating it. All development work must be done on the source files that Vite is configured to watch.
+
+## **Project Structure & Source Files**
+
+The project uses Vite to build the Chrome extension. The source files are located at the **root of the project** and within the **`/src` directory**.
+
+- **HTML Entry Points**: The primary HTML files are at the project root.
+    - `[popup.html](mdc:popup.html)`
+    - `[sidepanel.html](mdc:sidepanel.html)`
+    - `[options.html](mdc:options.html)`
+- **JavaScript/TypeScript Source**: All logic is written in TypeScript and located in the `/src` directory.
+    - **Popup Script Source**: `[popup.js](mdc:popup.js)` (at root)
+    - **Side Panel Script Source**: `[sidepanel.js](mdc:sidepanel.js)` (at root)
+    - **Background Script Source**: `[src/extension/background/background.ts](mdc:src/extension/background/background.ts)`
+    - **Content Script Source**: `[src/extension/content/content.ts](mdc:src/extension/content/content.ts)`
+    - **React Components**: `[src/components/](mdc:src/components)` and `[src/pages/](mdc:src/pages)`
+
+## **Development and Build Process**
+
+The development workflow is managed by scripts defined in `[package.json](mdc:package.json)`.
+
+- **To start the development server with hot-reloading, run:**
+  ```bash
+  npm run dev:ext
+  ```
+- This command uses `vite build --watch`. Vite watches the source files (`popup.html`, `src/**/*.ts`, etc.) for changes and automatically rebuilds the extension into the `/dist` folder.
+- You must reload the unpacked extension in Chrome (`chrome://extensions`) after the initial build to see changes. Subsequent changes to source files should be hot-reloaded automatically.
+
+## **Testing**
+
+- **Unit & Component Tests**: Run with Jest.
+  ```bash
+  npm test
+  npm test:watch
+  ```
+- **End-to-End Tests**: Run with Playwright.
+  ```bash
+  npm run test:e2e
+  ```
+
+By adhering to this workflow and only editing the correct source files, the development process will be smooth and efficient.

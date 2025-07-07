@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "version": "1.0.0",
+  "licenses": {
+    "domain_licenses": {
+      "localhost": {
+        "valid": true,
+        "expires": "2025-12-31",
+        "features": [
+          "search",
+          "data_grid",
+          "export"
+        ]
+      }
+    },
+    "user_licenses": {
+      "test@example.com": {
+        "valid": true,
+        "expires": "2025-06-30",
+        "features": [
+          "search",
+          "data_grid",
+          "export"
+        ]
+      }
+    }
+  },
+  "default_features": [
+    "search"
+  ],
+  "license_server": "https://storage.googleapis.com/toolbar_resources/",
+  "last_updated": "2025-07-07T00:05:19.612Z"
+}

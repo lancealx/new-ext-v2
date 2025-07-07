@@ -58,6 +58,15 @@ function restoreOptions() {
   });
 }
 
+// Open admin dashboard
+function openAdminDashboard() {
+  // Open the admin dashboard in a new tab
+  chrome.tabs.create({
+    url: chrome.runtime.getURL('index.html?admin=true')
+  });
+}
+
 // Add event listeners
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.getElementById('save-options').addEventListener('click', saveOptions); 
+document.getElementById('save-options').addEventListener('click', saveOptions);
+document.getElementById('open-admin').addEventListener('click', openAdminDashboard); 

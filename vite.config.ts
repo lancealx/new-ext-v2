@@ -31,7 +31,8 @@ export default defineConfig({
           }
         },
         background: {
-          service_worker: "src/extension/background/background.ts"
+          service_worker: "src/extension/background/background.ts",
+          type: "module"
         },
         content_scripts: [
           {
